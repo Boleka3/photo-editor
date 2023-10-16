@@ -16,7 +16,7 @@ using namespace std;
 unsigned char image[SIZE][SIZE];  //declaring image as a char [256][256]
 unsigned char image2[SIZE][SIZE]; //declaring second image for filter # 5
 char imagefilename [100]; // declaring a char size 100 to name the saved images
-int process ; // integer for filter input numbers
+char process ; // integer for filter input numbers
 //==========================================================================================================
 void load(); //load the image to begin editing
 void loadtwo(); //load a second image for merging
@@ -29,7 +29,7 @@ void flipvt(); //flip vertically filter
 void rotate(); // rotate image filter
 void darken(); // darken image by 50%
 void lighten(); //lighten image by 50%
-
+void detectedges();// detect image edges, make them black and the rest white
 int main()
 {
   cout<<"Hey user ;) \n"
@@ -41,27 +41,24 @@ int main()
   <<"5- Rotate\n"
   <<"6- Darken or Lighten \n";
   load();
-
   start:; //regenerating menu point
-
   cout<<"Enter the required filter : ";
   cin>>process;
 
-
   switch(process){ // switch for filters and functions . every case contains save function
-      case 1:
+      case '1':
           bw();
           save();
           break;
-      case 2:
+      case '2':
           inverse();
           save();
           break;
-      case 3:
+      case '3':
           merge();
           save();
           break;
-      case 4:
+      case '4':
           char x;
           cout<<"would you like to flip the image in a horizontal or vertical way (H/V) ?";
           cin>> x;
@@ -71,11 +68,11 @@ int main()
               fliphz();
           save();
           break;
-      case 5:
+      case '5':
           rotate();
           save();
           break;
-      case 6:
+      case '6':
           char y;
           cout<<"would you darken or lighten the image (D/L) ?";
           cin>>y;
@@ -83,25 +80,28 @@ int main()
               darken();
           else
               lighten();
-
+          save();
+          break;
+      case '7':
+          detectedges();
           save();
           break;
 
   }
-  cout<<"Do you want to add another filter ?(Y,N):";
-  char w;
-  cin>>w;
-  if(w == 'Y'|| w== 'y') // if condition offering the user to continue editing or exit
-      goto start; // function to regenerate the menu for another filter
-  else
-      cout<<"sharftena ya 2amr. ";
-  return 0;
+    char w;
+    cout<<"Do you want to add another filter ?(Y,N): \n";cin>>w;
+
+    if(w == 'Y'|| w== 'y') // if condition offering the user to continue editing or exit
+        goto start; // function to regenerate the menu for another filter
+    else
+        cout<<"sharftena ya 2amr. ";
+    return 0;
 }
 // temp integer = temporary images to make the algorithms easier
 void load () {
 
     char imagefilename[100];
-    cout << "Enter the source image file name : ";
+    cout << "Enter the source image file name :  \n";
     cin >> imagefilename;
     strcat (imagefilename, ".bmp"); // adding .bmp to name entered to make it an image file
     readGSBMP(imagefilename, image); // reads the image from the file specified by filename in a specific folder
@@ -109,7 +109,7 @@ void load () {
 void loadtwo () { //same as load() for second image in merge filter
 
     char imagefilename[100];
-    cout << "Enter the second source image file name : ";
+    cout << "Enter the second source image file name :  \n";
     cin >> imagefilename;
     strcat(imagefilename, ".bmp");
     readGSBMP(imagefilename, image2);
@@ -117,7 +117,7 @@ void loadtwo () { //same as load() for second image in merge filter
 void save () {
 
     char imagefilename[100];
-    cout << "Name the file :  ";
+    cout << "Name the file :  \n";
     cin >> imagefilename;
     strcat (imagefilename, ".bmp");// adding .bmp to name entered to make it an image file
     writeGSBMP(imagefilename, image); // saving image with the name user entered and apply it as [256][256] image
@@ -226,6 +226,35 @@ void darken () {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j< SIZE; j++) {
             image[i][j]=(image[i][j]/2);
+        }
+    }
+}
+void detectedges() {
+    //using an average black and white filter to get the basic image objects then highlight its edges by
+    // if loop for the difference of black and white pixels
+
+    int s = 0;
+    int avg;
+    for (int i = 0; i < 256; i++) {
+        for (int j = 0; j < 256; j++) {
+            s += image[i][j];
+        }
+    }
+    avg = (s / 256) / 255;
+    for (int i = 0; i < 256; i++) {
+        for (int j = 0; j < 256; j++) {
+            if (image[i][j] <= avg)
+                image[i][j] = 0;
+            else
+                image[i][j] = 255;
+        }
+    }
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            if ((abs(image[i][j] - image[i][j + 1]) >= 200) || (abs(image[i][j] - image[i + 1][j]) >= 200)) {
+                image[i][j] = 0;
+            } else
+                image[i][j] = 255;
         }
     }
 }

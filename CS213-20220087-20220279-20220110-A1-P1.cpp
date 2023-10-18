@@ -35,6 +35,12 @@ void enlarge(); // choosing one of image quarters and enlarge its scale
 void shrink_quarter(); // shrinking image to fourth its original scale
 void shrink_half(); // shrinking image to half its original scale
 void shrink_third(); // shrinking image to third its original scale
+void mrrleft(); //mirrors left half of the image
+void mrrright(); //mirrors right half of the image
+void mrrupper(); //mirrors upper half of the image
+void mrrlower(); //mirrors lower half of the image
+void shuffle(); // divides image into 4 quarters and shuffle them by users order
+void blur(); // make blur edit as bury version of the image
 //==========================================================================
 
 int main()
@@ -50,6 +56,9 @@ int main()
         <<"7- Detect Image Edges\n"
         <<"8- enlarge\n"
         <<"9- shrink\n"
+        <<"a- mirror\n"
+        <<"b- shuffle\n"
+        <<"c- blur\n"
     load();
 
     start:; //respawning to the beginning menu point
@@ -115,6 +124,28 @@ int main()
                 shrink_third();
             else
                 shrink_quarter();
+            save();
+            break;
+        case 'a':
+            int q;
+            cout<<"enter the quarter you want to edit [left, right, upper or lower] half (1,2,3,4) ? : ";
+            cin>>q;
+            if (q==1)
+                mrrleft();
+            else if (q==2)
+                mrrright();
+            else if (q==3)
+                mrrupper();
+            else
+                mrrlower();
+            save();
+            break;
+        case 'b':
+            shuffle();
+            save();
+            break;
+        case 'c':
+            blur();
             save();
             break;
             char w;
@@ -386,6 +417,181 @@ int main()
         for (int i = 0; i < 256; i++) {
             for (int j = 0; j < 256; j++) {
                 image[i][j] = temp[i][j];
+            }
+        }
+    }
+
+    void mrrleft () {
+// cutting image vertically into two halves and coping the left one with inverse index
+
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE/2; j++) {
+                int temp[SIZE][SIZE];
+                temp[i][j] = image[i][j];
+                image [i][255 - j] = temp[i][j];
+            }
+        }
+    }
+
+    void mrrright () {
+// cutting image vertically into two halves and coping the right one with inverse index
+
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE/2; j++) {
+                int temp[SIZE][SIZE];
+                temp[i][j] = image[i][128 + j];
+                image [i][127 - j] = temp[i][j];
+            }
+        }
+    }
+
+    void mrrupper () {
+// cutting image horizontally into two halves and coping the upper one with inverse index
+
+        for (int i = 0; i < SIZE/2; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                int temp[SIZE][SIZE];
+                temp[i][j] = image[i][j];
+                image [255 - i][j] = temp[i][j];
+            }
+        }
+    }
+
+    void mrrlower() {
+// cutting image horizontally into two halves and coping the lower one with inverse index
+
+        for (int i = 0; i < SIZE/2; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                int temp[SIZE][SIZE];
+                temp[i][j] = image[128 + i][j];
+                image [127 - i][j] = temp[i][j];
+            }
+        }
+    }
+
+    void shuffle() { // separating 4 quarters and implement user order to shuffle them
+
+        int temp_st[SIZE][SIZE];
+        int temp_nd[SIZE][SIZE];
+        int temp_rd[SIZE][SIZE];
+        int temp_th[SIZE][SIZE];
+        //declaring 4 temps for saving four quarters
+        for (int i = 0; i < SIZE / 2; i++) { // quarter #1
+            for (int j = 0; j < SIZE / 2; j++) {
+                temp_st[i][j] = image[i][j];
+            }
+        }
+        for (int i = 0; i < SIZE / 2; i++) {// quarter #2
+            for (int j = 128; j < SIZE; j++) {
+                temp_nd[i][j - 128] = image[i][j];
+            }
+        }
+        for (int i = 128; i < SIZE; i++) {// quarter #3
+            for (int j = 0; j < SIZE / 2; j++) {
+                temp_rd[i - 128][j] = image[i][j];
+            }
+        }
+
+        for (int i = 128; i < SIZE; i++) {// quarter #4
+            for (int j = 128; j < SIZE; j++) {
+                temp_th[i - 128][j - 128] = image[i][j];
+            }
+        } // user declaring order
+        int order;
+        cout<< "input order : \n";
+        for (int i = 0; i < 4; i++) {
+            int p ,l;
+            if(i==0){
+                p =0;
+                l = 0;
+            }
+            if(i==1){
+                p =0;
+                l = 128;
+            }
+            if(i==2){
+                p =128;
+                l = 0;
+            }
+            if(i==3){
+                p =128;
+                l = 128;
+            }
+            cin >> order;
+            if (order == 1) { // temps getting their places according to user's order
+                int n = 0 ;
+                int c = 0 ;
+                for (int i = p; i < p + 128; i++) {
+                    c = 0 ;
+                    for (int j = l; j < l + 128; j++) {
+                        image[i][j] = temp_st[n][c];
+                        c++;
+                    }
+                    n++;
+                }
+            }
+            if (order == 2) {
+                int n = 0 ;
+                int c = 0 ;
+                for (int i = p; i < p + 128; i++) {
+                    c = 0 ;
+                    for (int j = l; j < l + 128; j++) {
+                        image[i][j] = temp_nd[n][c];
+                        c++;
+                    }
+                    n++;
+                }
+            }
+            if (order == 3) {
+                int n = 0 ;
+                int c = 0 ;
+                for (int i = p; i < p + 128; i++) {
+                    c = 0 ;
+                    for (int j = l; j < l + 128; j++) {
+                        image[i][j] = temp_rd[n][c];
+                        c++;
+                    }
+                    n++;
+                }
+            }
+            if (order == 4) {
+                int n = 0 ;
+                int c = 0 ;
+                for (int i = p; i < p + 128; i++) {
+                    c = 0 ;
+                    for (int j = l; j < l + 128; j++) {
+                        image[i][j] = temp_th[n][c];
+                        c++;
+                    }
+                    n++;
+                }
+            }
+        }
+    }
+
+    void blur() {
+// declaring temporary image(temp) in white scale then adding blurred pixels to it using average method
+// (taking average gray scale of 9 pixels and represent it in one pixel)  5 times
+
+        unsigned char temp[SIZE][SIZE];
+        int c=5;
+        while (c--){
+            for (int i = 0; i < SIZE; i++) {
+                for (int j = 0; j < SIZE; j++) {
+                    temp[i][j] = 255;
+                }
+            }
+            for (int i = 0; i < SIZE; i++) {
+                for (int j = 0; j < SIZE; j++) {
+                    temp[i][j] = (image[i - 1][j - 1] + image[i - 1][j] + image[i - 1][j + 1] + image[i][j - 1]
+                                  + image[i][j] + image[i][j + 1] + image[i + 1][j - 1] + image[i + 1][j] +
+                                  image[i + 1][j + 1]) / 9;
+                }
+            }
+            for (int i = 0; i < SIZE; i++) {
+                for (int j = 0; j < SIZE; j++) {
+                    image[i][j] = temp[i][j];
+                }
             }
         }
     }

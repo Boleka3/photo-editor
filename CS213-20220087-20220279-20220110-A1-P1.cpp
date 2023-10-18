@@ -1,11 +1,12 @@
 // FCAI – OOP Programming – 2023 - Assignment 1
 // Program Name: 				filters editor .cpp
 // Last Modification Date:	10/10/2023
-// Author1 and ID and Group:	Belal Mohamed Youness - 20220087 Group B email : belalyouness494@gmail.com
-// Author2 and ID and Group:	Hossam Mohsen Hassan - 20220110 - fc22hossam@gmail.com
-// Author3 and ID and Group:	Mohamed Ahmed Ali - 20220279 - Derballa2004@gmail.com
+// Author1 and ID and Group:	Belal Mohamed Youness - 20220087 - email : belalyouness494@gmail.com
+// Author2 and ID and Group:	Hossam Mohsen Hassan - 20220110 - email : fc22hossam@gmail.com
+// Author3 and ID and Group:	Mohamed Ahmed Ali - 20220279 - email : Derballa2004@gmail.com
 // Teaching Assistant:		xxxxxxxxxx
 // Purpose:A C++ code to apply 6 filters on gray scale images, and can do it for several times on the same image.
+
 
 #include <iostream>
 #include <cmath>
@@ -29,232 +30,362 @@ void flipvt(); //flip vertically filter
 void rotate(); // rotate image filter
 void darken(); // darken image by 50%
 void lighten(); //lighten image by 50%
-void detectedges();// detect image edges, make them black and the rest white
+void detectedges(); // detect image edges, make them black and the rest white
+void enlarge(); // choosing one of image quarters and enlarge its scale
+void shrink_quarter(); // shrinking image to fourth its original scale
+void shrink_half(); // shrinking image to half its original scale
+void shrink_third(); // shrinking image to third its original scale
+//==========================================================================
+
 int main()
 {
-  cout<<"Hey user ;) \n"
-  <<"Select a filter from the following : \n"
-  <<"1- Black and White\n"
-  <<"2- Inverse\n"
-  <<"3- Merge\n"
-  <<"4- Flip (Horizontal / Vertical)\n"
-  <<"5- Rotate\n"
-  <<"6- Darken or Lighten \n";
-  load();
-  start:; //regenerating menu point
-  cout<<"Enter the required filter : ";
-  cin>>process;
+    cout<<"Hey user ;) \n"
+        <<"Select a filter from the following : \n"
+        <<"1- Black and White\n"
+        <<"2- Inverse\n"
+        <<"3- Merge\n"
+        <<"4- Flip (Horizontal / Vertical)\n"
+        <<"5- Rotate\n"
+        <<"6- Darken or Lighten \n"
+        <<"7- Detect Image Edges\n"
+        <<"8- enlarge\n"
+        <<"9- shrink\n"
+    load();
 
-  switch(process){ // switch for filters and functions . every case contains save function
-      case '1':
-          bw();
-          save();
-          break;
-      case '2':
-          inverse();
-          save();
-          break;
-      case '3':
-          merge();
-          save();
-          break;
-      case '4':
-          char x;
-          cout<<"would you like to flip the image in a horizontal or vertical way (H/V) ?";
-          cin>> x;
-          if (x == 'V'|| x == 'v') // if condition to allow the user to choose vertical flip or horizontal flip
-              flipvt();
-          else
-              fliphz();
-          save();
-          break;
-      case '5':
-          rotate();
-          save();
-          break;
-      case '6':
-          char y;
-          cout<<"would you darken or lighten the image (D/L) ?";
-          cin>>y;
-          if(y == 'D'||y=='d') // if condition to allow the user to choose between the dark or light effect
-              darken();
-          else
-              lighten();
-          save();
-          break;
-      case '7':
-          detectedges();
-          save();
-          break;
+    start:; //respawning to the beginning menu point
 
-  }
-    char w;
-    cout<<"Do you want to add another filter ?(Y,N): \n";cin>>w;
+    cout<<"Enter the required filter : \n";
+    cin>>process;
 
-    if(w == 'Y'|| w== 'y') // if condition offering the user to continue editing or exit
-        goto start; // function to regenerate the menu for another filter
-    else
-        cout<<"sharftena ya 2amr. ";
-    return 0;
-}
+    //=================================================================
+
+    switch(process){ // switch for filters and functions . every case contains save function
+
+        case '1':
+            bw();
+            save();
+            break;
+        case '2':
+            inverse();
+            save();
+            break;
+        case '3':
+            merge();
+            save();
+            break;
+        case '4':
+            char x;
+            cout<<"would you like to flip the image in a horizontal or vertical way (H/V) ?";
+            cin>> x;
+            if (x == 'V'|| x == 'v') // if condition to allow the user to choose vertical flip or horizontal flip
+                flipvt();
+            else
+                fliphz();
+            save();
+            break;
+        case '5':
+            rotate();
+            save();
+            break;
+        case '6':
+            char y;
+            cout<<"would you darken or lighten the image (D/L) ?";
+            cin>>y;
+            if(y == 'D'||y=='d') // if condition to allow the user to choose between the dark or light effect
+                darken();
+            else
+                lighten();
+            save();
+            break;
+        case '7':
+            detectedges();
+            save();
+            break;
+        case '8':
+            enlarge();
+            save();
+            break;
+        case '9':
+            int s;
+            cout<<"input scale of shrink (1. 1/2 , 2. 1/3 , 3. 1/4)\n";
+            cin>>s;
+            if(s==1)
+                shrink_half();
+            else if (s==2)
+                shrink_third();
+            else
+                shrink_quarter();
+            save();
+            break;
+            char w;
+            cout<<"Do you want to add another filter ?(Y,N): \n";cin>>w;
+
+            if(w == 'Y'|| w== 'y') // if condition offering the user to continue editing or exit
+                goto start; // function to regenerate the menu for another filter
+            else
+                cout<<"sharftena ya 2amr. ";
+            return 0;
+    }
 // temp integer = temporary images to make the algorithms easier
-void load () {
+    void load () {
 
-    char imagefilename[100];
-    cout << "Enter the source image file name :  \n";
-    cin >> imagefilename;
-    strcat (imagefilename, ".bmp"); // adding .bmp to name entered to make it an image file
-    readGSBMP(imagefilename, image); // reads the image from the file specified by filename in a specific folder
-}
-void loadtwo () { //same as load() for second image in merge filter
-
-    char imagefilename[100];
-    cout << "Enter the second source image file name :  \n";
-    cin >> imagefilename;
-    strcat(imagefilename, ".bmp");
-    readGSBMP(imagefilename, image2);
-}
-void save () {
-
-    char imagefilename[100];
-    cout << "Name the file :  \n";
-    cin >> imagefilename;
-    strcat (imagefilename, ".bmp");// adding .bmp to name entered to make it an image file
-    writeGSBMP(imagefilename, image); // saving image with the name user entered and apply it as [256][256] image
-}
-
-void bw() {
-
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j< SIZE; j++) {
-            if (image[i][j] > 127)
-                image[i][j] = 255;
-            else
-                image[i][j] = 0;
-        }
+        char imagefilename[100];
+        cout << "Enter the source image file name :  \n";
+        cin >> imagefilename;
+        strcat (imagefilename, ".bmp"); // adding .bmp to name entered to make it an image file
+        readGSBMP(imagefilename, image); // reads the image from the file specified by filename in a specific folder
     }
-}
-void inverse () {
+    void loadtwo () { //same as load() for second image in merge filter
 
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            image[i][j] = 255 - image[i][j];
-        }
+        char imagefilename[100];
+        cout << "Enter the second source image file name :  \n";
+        cin >> imagefilename;
+        strcat(imagefilename, ".bmp");
+        readGSBMP(imagefilename, image2);
     }
-}
-void merge() {
+    void save () { //function to save the edited image
 
-    loadtwo();
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j< SIZE; j++) {
-            image[i][j]= (image[i][j] + image2[i][j])/2;
-            }
-        }
-}
-void fliphz() {
+        char imagefilename[100];
+        cout << "Name the file :  \n";
+        cin >> imagefilename;
+        strcat (imagefilename, ".bmp");// adding .bmp to name entered to make it an image file
+        writeGSBMP(imagefilename, image); // saving image with the name user entered and apply it as [256][256] image
+    }
 
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            if(i>=127 && j>=127) {
-                int temp = image[i][j];
-                image[i][j] = image[255-i][j];
-                image[255-i][j] = temp ;
-            }
-            else if(i<127 && j<127){
-                int temp = image[i][j];
-                image[i][j] = image[255-i][j];
-                image[255-i][j] = temp;
+    void bw() { // 127 is the midpoint between black and white , so we make a black and white with a simple code
+
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j< SIZE; j++) {
+                if (image[i][j] > 127)
+                    image[i][j] = 255;
+                else
+                    image[i][j] = 0;
             }
         }
     }
-}
+    void inverse () { // getting the adding inverse of gray scale
 
-void flipvt() {
-
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            if (i >= 127 && j >= 127) {
-                int temp = image[i][j];
-                image[i][j] = image[i][255 - j];
-                image[i][255 - j] = temp;
-            } else if (i < 127 && j < 127) {
-                int temp = image[i][j];
-                image[i][j] = image[i][255 - j];
-                image[i][255 - j] = temp;
-            }
-        }
-    }
-}
-void rotate (){
-
-    int y;
-    int z;
-    int temp [SIZE][SIZE];
-    cout<<"Please enter the degree of rotation (90 , 180 , 270) : ";
-    cin>>y ;
-    if(y == 90)
-        z = 1;
-    else if(y==180)
-        z = 2;
-    else if(y == 270)
-        z = 3;
-    else
-        z = 4;
-    while(z--){
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                temp [i][j]= image [i][j];
-            }}
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                image [i][j]= temp[255-j][i];
+                image[i][j] = 255 - image[i][j];
             }
         }
     }
-}
+    void merge() { // adding two images and getting the avg between their pixels
 
-void lighten() {
+        loadtwo();
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j< SIZE; j++) {
+                image[i][j]= (image[i][j] + image2[i][j])/2;
+            }
+        }
+    }
+    void fliphz() {
 
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j< SIZE; j++) {
-            image[i][j]=(255+image[i][j])/2;
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if(i>=127 && j>=127) {  // declaring a temporary image and flipping its  2 quarters then the second ones
+                    int temp = image[i][j];
+                    image[i][j] = image[255-i][j];
+                    image[255-i][j] = temp ;
+                }
+                else if(i<127 && j<127){ // if loop for the second quarters
+                    int temp = image[i][j];
+                    image[i][j] = image[255-i][j];
+                    image[255-i][j] = temp;
+                }
+            }
         }
     }
-}
-void darken () {
 
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j< SIZE; j++) {
-            image[i][j]=(image[i][j]/2);
-        }
-    }
-}
-void detectedges() {
-    //using an average black and white filter to get the basic image objects then highlight its edges by
-    // if loop for the difference of black and white pixels
+    void flipvt() { // same as flip hz() but in a vertical way
 
-    int s = 0;
-    int avg;
-    for (int i = 0; i < 256; i++) {
-        for (int j = 0; j < 256; j++) {
-            s += image[i][j];
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (i >= 127 && j >= 127) {
+                    int temp = image[i][j];
+                    image[i][j] = image[i][255 - j];
+                    image[i][255 - j] = temp;
+                } else if (i < 127 && j < 127) {
+                    int temp = image[i][j];
+                    image[i][j] = image[i][255 - j];
+                    image[i][255 - j] = temp;
+                }
+            }
         }
     }
-    avg = (s / 256) / 255;
-    for (int i = 0; i < 256; i++) {
-        for (int j = 0; j < 256; j++) {
-            if (image[i][j] <= avg)
-                image[i][j] = 0;
-            else
-                image[i][j] = 255;
+    void rotate (){
+
+        int y;
+        int z;
+        int temp [SIZE][SIZE]; // declaring a temporary image
+        cout<<"Please enter the degree of rotation (90 , 180 , 270) :  ";
+        cin>>y ;
+        if(y == 90) // if loop for choosing the user rotation degree
+            z = 1;
+        else if(y==180)
+            z = 2;
+        else if(y == 270)
+            z = 3;
+        else
+            z = 4;
+        while(z--){ // using simple math equation for pixels interchange to get image[255-j][i] pixels muck in with temp[i][j]
+            for (int i = 0; i < SIZE; i++) {
+                for (int j = 0; j < SIZE; j++) {
+                    temp [i][j]= image [i][j];
+                }}
+            for (int i = 0; i < SIZE; i++) {
+                for (int j = 0; j < SIZE; j++) {
+                    image [i][j]= temp[255-j][i];
+                }
+            }
         }
     }
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            if ((abs(image[i][j] - image[i][j + 1]) >= 200) || (abs(image[i][j] - image[i + 1][j]) >= 200)) {
-                image[i][j] = 0;
-            } else
-                image[i][j] = 255;
+
+    void lighten() {
+// lighten image by average this way to be more accurate than adding scale bits
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j< SIZE; j++) {
+                image[i][j]=(255+image[i][j])/2;
+            }
         }
     }
-}
+    void darken () {
+// darken image by average this way to be more accurate than subtracting scale bits
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j< SIZE; j++) {
+                image[i][j]=(image[i][j]/2);
+            }
+        }
+    }
+    void detectedges() {
+        //using an average black and white filter to get the basic image objects then highlight its edges by
+        // if loop for the difference of black and white pixels
+
+        int s = 0;
+        int avg;
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+                s += image[i][j];
+            }
+        }
+        avg = (s / 256) / 255;
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+                if (image[i][j] <= avg)
+                    image[i][j] = 0;
+                else
+                    image[i][j] = 255;
+            }
+        }
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if ((abs(image[i][j] - image[i][j + 1]) >= 200) || (abs(image[i][j] - image[i + 1][j]) >= 200)) {
+                    image[i][j] = 0;
+                } else
+                    image[i][j] = 255;
+            }
+        }
+    }
+
+    void enlarge (){
+        unsigned char temp[SIZE][SIZE];
+        int s;
+        cout<<"input quarter you want to enlarge (1,2,3,4) : \n";
+        cin>>s;
+
+        if (s == 1) {
+            for (int i = 0; i < SIZE / 2; i++) {
+                for (int j = 0; j < SIZE / 2; j++) {
+                    temp[2 * i][2 * j] = image[i][j];
+                    temp[2 * i + 1][2 * j] = image[i][j];
+                    temp[2 * i][2 * j + 1] = image[i][j];
+                    temp[2 * i + 1][2 * j + 1] = image[i][j];
+                }
+            }
+        } else if (s == 2) {
+            for (int i = 0; i < SIZE / 2; i++) {
+                for (int j = 128; j < SIZE; j++) {
+                    temp[2 * i][2 * (j - SIZE / 2)] = image[i][j];
+                    temp[2 * i + 1][2 * (j - SIZE / 2)] = image[i][j];
+                    temp[2 * i][2 * (j - SIZE / 2) + 1] = image[i][j];
+                    temp[2 * i + 1][2 * (j - SIZE / 2) + 1] = image[i][j];
+
+                }
+            }
+        } else if (s == 3) {
+            for (int i = 128; i < SIZE; i++) {
+                for (int j = 0; j < SIZE / 2; j++) {
+                    temp[2 * (i - SIZE / 2)][2 * j] = image[i][j];
+                    temp[2 * (i - SIZE / 2) + 1][2 * j] = image[i][j];
+                    temp[2 * (i - SIZE / 2)][2 * j + 1] = image[i][j];
+                    temp[2 * (i - SIZE / 2) + 1][2 * j + 1] = image[i][j];
+                }
+            }
+        } else if (s == 4) {
+            for (int i = 128; i < SIZE; i++) {
+                for (int j = 128; j < SIZE; j++) {
+                    temp[2 * (i - SIZE / 2)][2 * (j - SIZE / 2)] = image[i][j];
+                    temp[2 * (i - SIZE / 2) + 1][2 * (j - SIZE / 2)] = image[i][j];
+                    temp[2 * (i - SIZE / 2)][2 * (j - SIZE / 2) + 1] = image[i][j];
+                    temp[2 * (i - SIZE / 2) + 1][2 * (j - SIZE / 2) + 1] = image[i][j];
+                }
+            }
+        }
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                image[i][j] = temp[i][j];
+            }
+        }
+    }
+
+    void shrink_half() {
+// representing every 4 pixels in 1 pixel by average method
+
+        int temp[SIZE][SIZE];
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+                temp[i][j] = 255;
+            }
+        }
+        for (int i = 0; i < 128; i++) {
+            for (int j = 0; j < 128; j++) {
+                temp[i][j] = (image[2 * i][2 * j] + image[2 * i][2 * j + 1] + image[2 * i + 1][2 * j] +
+                              image[2 * i + 1][(j * 2) + 1]) / 4;
+            }
+        }
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+                image[i][j] = temp[i][j];
+            }
+        }
+    }
+
+    void shrink_quarter() {
+// representing every 16 pixels in 1 pixel using two half shrink
+
+        shrink_half();
+        shrink_half();
+    }
+
+    void shrink_third(){
+// representing every 9 pixels in 1 pixel by average method
+
+        int temp[SIZE][SIZE];
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+                temp[i][j] = 255;
+            }
+        }
+        for (int i = 0; i < 86; i++) {
+            for (int j = 0; j < 86; j++) {
+                temp[i][j] = (image[3 * i][3 * j] + image[3 * i][3 * j + 1] + image[3 * i + 1][3 * j] +
+                              image[3 * i + 1][(j * 3) + 1]+ image[3 * i + 1][3 * j]+ image[3 * i][3 * j + 2]+ image[3 * i + 2][3 * j + 2]) / 7;
+            }
+        }
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+                image[i][j] = temp[i][j];
+            }
+        }
+    }

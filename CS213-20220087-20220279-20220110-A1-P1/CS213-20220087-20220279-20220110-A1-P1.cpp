@@ -1,11 +1,11 @@
 // FCAI – OOP Programming – 2023 - Assignment 1
 // Program Name: 				filters editor .cpp
 // Last Modification Date:	10/10/2023
-// Author1 and ID and Group:	Belal Mohamed Youness - 20220087 - email : belalyouness494@gmail.com
-// Author2 and ID and Group:	Hossam Mohsen Hassan - 20220110 - email : fc22hossam@gmail.com
-// Author3 and ID and Group:	Mohamed Ahmed Ali - 20220279 - email : Derballa2004@gmail.com
+// Author1 and ID and Group:	Belal Mohamed Youness - 20220087 - email : belalyouness494@gmail.com (gp B)
+// Author2 and ID and Group:	Hossam Mohsen Hassan - 20220110 - email : fc22hossam@gmail.com (gp A)
+// Author3 and ID and Group:	Mohamed Ahmed Ali - 20220279 - email : Derballa2004@gmail.com (gp B)
 // Teaching Assistant:		xxxxxxxxxx
-// Purpose:A C++ code to apply 6 filters on gray scale images, and can do it for several times on the same image.
+// Purpose:A C++ code to apply 15 filters on gray scale images, and can do it for several times on the same image.
 
 
 #include <iostream>
@@ -41,121 +41,140 @@ void mrrupper(); //mirrors upper half of the image
 void mrrlower(); //mirrors lower half of the image
 void shuffle(); // divides image into 4 quarters and shuffle them by users order
 void blur(); // make blur edit as bury version of the image
+void crop();// user chooses point coordinates , vertical and horizontal length to crop it from the image
+void skewhz(); // rotate the image horizontally  to make it like a parallelogram inside image brain
+void skewvt();// rotate the image vertically to make it like a parallelogram inside image brain
 //==========================================================================
 
 int main()
 {
-  cout<<"Hey user ;) \n"
-  <<"Select a filter from the following : \n"
-  <<"1- Black and White\n"
-  <<"2- Inverse\n"
-  <<"3- Merge\n"
-  <<"4- Flip (Horizontal / Vertical)\n"
-  <<"5- Rotate\n"
-  <<"6- Darken or Lighten \n"
-  <<"7- Detect Image Edges\n"
-  <<"8- enlarge\n"
-  <<"9- shrink\n"
-  <<"a- mirror\n"
-  <<"b- shuffle\n"
-  <<"c- blur\n"
-  load();
+    cout<<"Hey user ;) \n"
+        <<"Select a filter from the following : \n"
+        <<"1- Black and White\n"
+        <<"2- Inverse\n"
+        <<"3- Merge\n"
+        <<"4- Flip (Horizontal / Vertical)\n"
+        <<"5- Rotate\n"
+        <<"6- Darken or Lighten \n"
+        <<"7- Detect Image Edges\n"
+        <<"8- enlarge\n"
+        <<"9- shrink\n"
+        <<"a- mirror\n"
+        <<"b- shuffle\n"
+        <<"c- blur\n"
+        <<"d- crop\n"
+        <<"e- skew horizontal\n"
+        <<"f- skew vertical\n";
+    load();
 
-  start:; //respawning to the beginning menu point
+    start:; //respawning to the beginning menu point
 
-  cout<<"Enter the required filter : \n";
-  cin>>process;
+    cout<<"Enter the required filter : \n";
+    cin>>process;
 
-  //=================================================================
+    //=================================================================
 
-  switch(process){ // switch for filters and functions . every case contains save function
+    switch(process){ // switch for filters and functions . every case contains save function
 
-      case '1':
-          bw();
-          save();
-          break;
-      case '2':
-          inverse();
-          save();
-          break;
-      case '3':
-          merge();
-          save();
-          break;
-      case '4':
-          char x;
-          cout<<"would you like to flip the image in a horizontal or vertical way (H/V) ?";
-          cin>> x;
-          if (x == 'V'|| x == 'v') // if condition to allow the user to choose vertical flip or horizontal flip
-              flipvt();
-          else
-              fliphz();
-          save();
-          break;
-      case '5':
-          rotate();
-          save();
-          break;
-      case '6':
-          char y;
-          cout<<"would you darken or lighten the image (D/L) ?";
-          cin>>y;
-          if(y == 'D'||y=='d') // if condition to allow the user to choose between the dark or light effect
-              darken();
-          else
-              lighten();
-          save();
-          break;
-      case '7':
-          detectedges();
-          save();
-          break;
-      case '8':
-          enlarge();
-          save();
-          break;
-      case '9':
-          int s;
-          cout<<"input scale of shrink (1. 1/2 , 2. 1/3 , 3. 1/4)\n";
-          cin>>s;
-          if(s==1)
-              shrink_half();
-          else if (s==2)
-              shrink_third();
-          else
-              shrink_quarter();
-          save();
-          break;
-      case 'a':
-          int q;
-          cout<<"enter the quarter you want to edit [left, right, upper or lower] half (1,2,3,4) ? : ";
-          cin>>q;
-          if (q==1)
-              mrrleft();
-          else if (q==2)
-              mrrright();
-          else if (q==3)
-              mrrupper();
-          else
-              mrrlower();
-          save();
-          break;
-      case 'b':
-          shuffle();
-          save();
-          break;
-      case 'c':
-          blur();
-          save();
-          break;
-char w;
-  cout<<"Do you want to add another filter ?(Y,N): \n";cin>>w;
+        case '1':
+            bw();
+            save();
+            break;
+        case '2':
+            inverse();
+            save();
+            break;
+        case '3':
+            merge();
+            save();
+            break;
+        case '4':
+            char x;
+            cout<<"would you like to flip the image in a horizontal or vertical way (H/V) ?";
+            cin>> x;
+            if (x == 'V'|| x == 'v') // if condition to allow the user to choose vertical flip or horizontal flip
+                flipvt();
+            else
+                fliphz();
+            save();
+            break;
+        case '5':
+            rotate();
+            save();
+            break;
+        case '6':
+            char y;
+            cout<<"would you darken or lighten the image (D/L) ?";
+            cin>>y;
+            if(y == 'D'||y=='d') // if condition to allow the user to choose between the dark or light effect
+                darken();
+            else
+                lighten();
+            save();
+            break;
+        case '7':
+            detectedges();
+            save();
+            break;
+        case '8':
+            enlarge();
+            save();
+            break;
+        case '9':
+            int s;
+            cout<<"input scale of shrink (1. 1/2 , 2. 1/3 , 3. 1/4)\n";
+            cin>>s;
+            if(s==1)
+                shrink_half();
+            else if (s==2)
+                shrink_third();
+            else
+                shrink_quarter();
+            save();
+            break;
+        case 'a':
+            int q;
+            cout<<"enter the quarter you want to edit [left, right, upper or lower] half (1,2,3,4) ? : ";
+            cin>>q;
+            if (q==1)
+                mrrleft();
+            else if (q==2)
+                mrrright();
+            else if (q==3)
+                mrrupper();
+            else
+                mrrlower();
+            save();
+            break;
+        case 'b':
+            shuffle();
+            save();
+            break;
+        case 'c':
+            blur();
+            save();
+            break;
+        case 'd':
+            crop();
+            save();
+            break;
+        case 'e':
+            skewhz();
+            save();
+            break;
+        case 'f':
+            skewvt();
+            save();
+            break;
+    }
+    char w;
+    cout<<"Do you want to add another filter ?(Y,N): \n";cin>>w;
 
-  if(w == 'Y'|| w== 'y') // if condition offering the user to continue editing or exit
-      goto start; // function to regenerate the menu for another filter
-  else
-      cout<<"sharftena ya 2amr. ";
-  return 0;
+    if(w == 'Y'|| w== 'y') // if condition offering the user to continue editing or exit
+        goto start; // function to regenerate the menu for another filter
+    else
+        cout<<"sharftena ya 2amr. ";
+    return 0;
 }
 // temp integer = temporary images to make the algorithms easier
 void load () {
@@ -208,8 +227,8 @@ void merge() { // adding two images and getting the avg between their pixels
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j< SIZE; j++) {
             image[i][j]= (image[i][j] + image2[i][j])/2;
-            }
         }
+    }
 }
 void fliphz() {
 
@@ -290,10 +309,10 @@ void darken () {
     }
 }
 void detectedges() {
- //using an average black and white filter to get the basic image objects then highlight its edges by
- // if loop for the difference of black and white pixels
+    //using an average black and white filter to get the basic image objects then highlight its edges by
+    // if loop for the difference of black and white pixels
 
- int s = 0;
+    int s = 0;
     int avg;
     for (int i = 0; i < 256; i++) {
         for (int j = 0; j < 256; j++) {
@@ -308,7 +327,8 @@ void detectedges() {
             else
                 image[i][j] = 255;
         }
-    }
+    }// black and white filter made
+    // detect edges code :
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             if ((abs(image[i][j] - image[i][j + 1]) >= 200) || (abs(image[i][j] - image[i + 1][j]) >= 200)) {
@@ -321,13 +341,13 @@ void detectedges() {
 
 void enlarge (){
     unsigned char temp[SIZE][SIZE];
-    int s;
+    int s; // declaring temp image ,dividing image into four quarters and representing every 1 pixel in four pixels
     cout<<"input quarter you want to enlarge (1,2,3,4) : \n";
     cin>>s;
 
     if (s == 1) {
         for (int i = 0; i < SIZE / 2; i++) {
-            for (int j = 0; j < SIZE / 2; j++) {
+            for (int j = 0; j < SIZE / 2; j++) { //enlarge quarter#1
                 temp[2 * i][2 * j] = image[i][j];
                 temp[2 * i + 1][2 * j] = image[i][j];
                 temp[2 * i][2 * j + 1] = image[i][j];
@@ -335,7 +355,7 @@ void enlarge (){
             }
         }
     } else if (s == 2) {
-        for (int i = 0; i < SIZE / 2; i++) {
+        for (int i = 0; i < SIZE / 2; i++) {//enlarge quarter#2
             for (int j = 128; j < SIZE; j++) {
                 temp[2 * i][2 * (j - SIZE / 2)] = image[i][j];
                 temp[2 * i + 1][2 * (j - SIZE / 2)] = image[i][j];
@@ -345,7 +365,7 @@ void enlarge (){
             }
         }
     } else if (s == 3) {
-        for (int i = 128; i < SIZE; i++) {
+        for (int i = 128; i < SIZE; i++) {//enlarge quarter#3
             for (int j = 0; j < SIZE / 2; j++) {
                 temp[2 * (i - SIZE / 2)][2 * j] = image[i][j];
                 temp[2 * (i - SIZE / 2) + 1][2 * j] = image[i][j];
@@ -354,7 +374,7 @@ void enlarge (){
             }
         }
     } else if (s == 4) {
-        for (int i = 128; i < SIZE; i++) {
+        for (int i = 128; i < SIZE; i++) {//enlarge quarter#4
             for (int j = 128; j < SIZE; j++) {
                 temp[2 * (i - SIZE / 2)][2 * (j - SIZE / 2)] = image[i][j];
                 temp[2 * (i - SIZE / 2) + 1][2 * (j - SIZE / 2)] = image[i][j];
@@ -364,7 +384,7 @@ void enlarge (){
         }
     }
     for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
+        for (int j = 0; j < SIZE; j++) {// pasting temp imagein image [i][j] to output image in void save()
             image[i][j] = temp[i][j];
         }
     }
@@ -593,5 +613,102 @@ void blur() {
                 image[i][j] = temp[i][j];
             }
         }
+    }
+}
+
+void crop () {
+    // using user point coordinates and length to set the new image limits and crop it from the original one
+
+    int x; int y; int length; int width; unsigned char temp[SIZE][SIZE];
+    cout <<"x coordinate: ";cin>>x;
+    cout <<"y coordinates: ";cin>>y;
+    cout <<"lenght: ";cin>>length;
+    cout <<"width: ";cin>>width;
+    for (int i = 0; i < SIZE ; i++) {
+        for (int j = 0; j < SIZE ; j++) {
+            temp[i][j] = 255;
+        }
+    }
+    //setting the coordinates point as a starting point and drawing 2 lines with the
+    // length of length and width input to crop the image
+    for (int i = y; i < length; i++) {
+        for (int j = x; j < width; j++) {
+            temp[i+x][j+y]=image[i+x][j+y];
+        }
+    }
+    for (int i = 0; i < SIZE ; i++) {
+        for (int j = 0; j < SIZE ; j++) {
+            image[i][j]=temp[i][j];
+        }
+    }
+}
+
+void skewhz() {
+
+    int angle;
+    double unit,step,rad,x;
+    cout<<"Input the required angle : \n";cin>>angle;
+    angle = 90-angle;
+    rad = (tan((angle*M_PI)/180));
+    x= 256/(1+1/rad); // to get the shrink base length
+    step=SIZE-x; // beginning point
+    unit =step/SIZE;
+    unsigned char temp[SIZE][SIZE];
+    float y= SIZE/x,count; // shrink variables for base editing
+    for (int i = 0; i < SIZE; i++) {
+        count=0;
+        for (int j = 0; j < x; j++) {
+            count+=y; // adding pixels count
+            temp[i][j]=image[i][int (count)];
+
+        }
+    }
+    for (int i = SIZE-1; i >= 0; i--) {
+        for (int j = SIZE-1; j >= 0; j--) {
+            image[i][j]=255; //declaring white image in background
+        }
+    }
+    for (int i = 0; i < SIZE; i++) {
+        int length=step +x,n=0;
+        for (int j = step; j < length; j++) {
+            image[i][j]=temp[i][n];
+            n++;
+        }
+        step-=unit;// diagonal shaping by horizontal pixels line
+    }
+}
+
+void skewvt() {
+
+    int angle;
+    double unit,step,rad,x;
+    cout<<"Input the required angle : \n";cin>>angle;
+    angle = 90-angle;
+    rad = (tan((angle*M_PI)/180));
+    x= 256/(1+1/rad); // to get the shrink height length
+    step=SIZE-x; // beginning point
+    unit =step/SIZE;
+    unsigned char temp[SIZE][SIZE];
+    float y= SIZE/x,count; // shrink variables for height editing
+    for (int i = 0; i < SIZE; i++) {
+        count=0;
+        for (int j = 0; j < x; j++) {
+            count+=y; // adding pixels count
+            temp[j][i]=image[int (count)][i];
+
+        }
+    }
+    for (int i = SIZE-1; i >= 0; i--) {
+        for (int j = SIZE-1; j >= 0; j--) {
+            image[i][j]=255; //declaring white image in background
+        }
+    }
+    for (int i = 0; i < SIZE; i++) {
+        int length=step +x,n=0;
+        for (int j = step; j < length; j++) {
+            image[j][i]=temp[n][i];
+            n++;
+        }
+        step-=unit;// diagonal shaping by vertical pixels line
     }
 }

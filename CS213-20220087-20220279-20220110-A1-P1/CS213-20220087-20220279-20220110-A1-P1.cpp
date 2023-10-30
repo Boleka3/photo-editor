@@ -283,7 +283,8 @@ void rotate (){
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
                 temp [i][j]= image [i][j];
-            }}
+            }
+        }
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
                 image [i][j]= temp[255-j][i];

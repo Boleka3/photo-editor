@@ -2,9 +2,6 @@
 // FCAI – OOP Programming – 2023 - Assignment 1 Bonus
 // Program Name: 				filters RGB editor .cpp
 // Last Modification Date:	19/10/2023
-// Author1 and ID and Group:	Belal Mohamed Youness - 20220087 - email : belalyouness494@gmail.com
-// Author2 and ID and Group:	Hossam Mohsen Hassan - 20220110 - email : fc22hossam@gmail.com
-// Author3 and ID and Group:	Mohamed Ahmed Ali - 20220279 - email : Derballa2004@gmail.com
 // Teaching Assistant:		xxxxxxxxxx
 // Purpose:A C++ code to apply 15 RGB filters and user can do it for several times on the same image.
 // Comments same as gray scale but with declaration of [RGB] for loops .
